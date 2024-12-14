@@ -13,6 +13,7 @@ use App\Http\Controllers\Client\CouponController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\OrderController;
+use App\Http\Controllers\Admin\ReportController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -31,6 +32,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/user/password/update', [UserController::class, 'UserPasswordUpdate'])->name('user.password.update');
     Route::get('/user/all/wishlist', [HomeController::class, 'AllWishlist'])->name('all.wishlist');
     Route::get('/user/remove/wishlist/{id}', [HomeController::class, 'RemoveWishlist'])->name('remove.wishlist');
+    Route::controller(ManageOrderController::class)->group(function () {
+        Route::get('/user/order/list', 'UserOrderList')->name('user.order.list');
+        Route::get('/user/order/details/{id}', 'UserOrderDetails')->name('user.order.details');
+        Route::get('/user/invoice/download/{id}', 'UserInvoiceDownload')->name('user.invoice.download');
+    });
 });
 
 require __DIR__ . '/auth.php';
@@ -175,4 +181,16 @@ Route::controller(ManageOrderController::class)->group(function () {
     Route::get('/pening_to_confirm/{id}', 'PendingToConfirm')->name('pening_to_confirm');
     Route::get('/confirm_to_processing/{id}', 'ConfirmToProcessing')->name('confirm_to_processing');
     Route::get('/processing_to_deliverd/{id}', 'ProcessingToDiliverd')->name('processing_to_deliverd');
+});
+
+Route::controller(ReportController::class)->group(function () {
+    Route::get('/admin/all/reports', 'AminAllReports')->name('admin.all.reports');
+    Route::post('/admin/search/bydate', 'AminSearchByDate')->name('admin.search.bydate');
+    Route::post('/admin/search/bymonth', 'AminSearchByMonth')->name('admin.search.bymonth');
+    Route::post('/admin/search/byyear', 'AminSearchByYear')->name('admin.search.byyear');
+});
+
+Route::controller(ManageOrderController::class)->group(function () {
+    Route::get('/all/client/orders', 'AllClientOrders')->name('all.client.orders');
+    Route::get('/client/order/details/{id}', 'ClientOrderDetails')->name('client.order.details');
 });
